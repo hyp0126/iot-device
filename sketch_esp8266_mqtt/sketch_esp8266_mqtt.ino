@@ -20,8 +20,8 @@
 #include <Ticker.h>
 #include <AsyncMqttClient.h>
 
-#define WIFI_SSID "HYP"
-#define WIFI_PASSWORD "1234567890123"
+#define WIFI_SSID "ssid"
+#define WIFI_PASSWORD "passward"
 
 // Raspberri Pi Mosquitto MQTT Broker
 #define MQTT_HOST IPAddress(192, 168, 2, 62)
