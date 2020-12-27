@@ -21,7 +21,7 @@
 #include <AsyncMqttClient.h>
 
 #define WIFI_SSID "ssid"
-#define WIFI_PASSWORD "passward"
+#define WIFI_PASSWORD "password"
 
 // Raspberri Pi Mosquitto MQTT Broker
 #define MQTT_HOST IPAddress(192, 168, 2, 62)
@@ -30,13 +30,13 @@
 #define MQTT_PORT 1883
 
 // Temperature, Humidity, Light Intensity MQTT Topics
-#define MQTT_PUB_TEMP "esp/dht1/temperature"
-#define MQTT_PUB_HUM "esp/dht1/humidity"
-#define MQTT_PUB_LIGHT "esp/dht1/light"
+#define MQTT_PUB_TEMP "home/room1/temperature"
+#define MQTT_PUB_HUM "home/room1/humidity"
+#define MQTT_PUB_LIGHT "home/room1/brightness"
 
 // LED MQTT Topics
-#define MQTT_PUB_LED "esp/dht1/ledState"
-#define MQTT_SUB_LED "esp/dht1/led"
+#define MQTT_PUB_LED "home/room1/ledState"
+#define MQTT_SUB_LED "home/room1/led"
 
 // Digital pin connected to the DHT sensor
 #define DHTPIN 14  
@@ -60,7 +60,7 @@ DHT dht(DHTPIN, DHTTYPE);
 // Variables to hold sensor readings
 float temp;
 float hum;
-float light;
+float bright;
 
 AsyncMqttClient mqttClient;
 Ticker mqttReconnectTimer;
@@ -206,24 +206,24 @@ void loop() {
     // Read temperature as Fahrenheit (isFahrenheit = true)
     //temp = dht.readTemperature(true);
     // Read CDS sensor
-    light = analogRead(CDSPIN);
+    bright = analogRead(CDSPIN);
     
-    // Publish an MQTT message on topic esp/dht/temperature
+    // Publish an MQTT message on topic temperature
     uint16_t packetIdPub1 = mqttClient.publish(MQTT_PUB_TEMP, 1, true, String(temp).c_str());                            
     Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", MQTT_PUB_TEMP, packetIdPub1);
     Serial.printf("Message: %.2f \n", temp);
 
-    // Publish an MQTT message on topic esp/dht/humidity
+    // Publish an MQTT message on topic humidity
     uint16_t packetIdPub2 = mqttClient.publish(MQTT_PUB_HUM, 1, true, String(hum).c_str());                            
     Serial.printf("Publishing on topic %s at QoS 1, packetId %i: ", MQTT_PUB_HUM, packetIdPub2);
     Serial.printf("Message: %.2f \n", hum);
 
-    // Publish an MQTT message on topic esp/dht/humidity
-    uint16_t packetIdPub3 = mqttClient.publish(MQTT_PUB_LIGHT, 1, true, String(light).c_str());                            
+    // Publish an MQTT message on topic brightness
+    uint16_t packetIdPub3 = mqttClient.publish(MQTT_PUB_LIGHT, 1, true, String(bright).c_str());                            
     Serial.printf("Publishing on topic %s at QoS 1, packetId %i: ", MQTT_PUB_LIGHT, packetIdPub3);
-    Serial.printf("Message: %.2f \n", light);   
+    Serial.printf("Message: %.2f \n", bright);   
 
-    // Publish an MQTT message on topic esp/dht/led
+    // Publish an MQTT message on topic led
     char ledOnFlagStr[2];
     if (ledOnFlag == true)
     {
