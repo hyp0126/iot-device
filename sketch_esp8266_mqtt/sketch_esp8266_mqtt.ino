@@ -13,20 +13,22 @@
  *  modified 2020-12-24: Add LED for checking live
  *                       Add Light Intensity Sensor 
  *  modified 2020-12-25: Add LED subscribe topic
+ *  modified 2020-12-28: Use credentials
  */
 
 #include "DHT.h"
 #include <ESP8266WiFi.h>
 #include <Ticker.h>
 #include <AsyncMqttClient.h>
+#include "HomeConfig.h"
 
-#define WIFI_SSID "ssid"
-#define WIFI_PASSWORD "password"
+#define WIFI_SSID HOME_SSID//"ssid"
+#define WIFI_PASSWORD HOME_PASSWORD //"password"
 
 // Raspberri Pi Mosquitto MQTT Broker
-#define MQTT_HOST IPAddress(192, 168, 2, 62)
+//#define MQTT_HOST IPAddress(192, 168, 0, 26)
 // For a cloud MQTT broker, type the domain name
-//#define MQTT_HOST "example.com"
+#define MQTT_HOST HOME_HOST
 #define MQTT_PORT 1883
 
 // Temperature, Humidity, Light Intensity MQTT Topics
@@ -186,7 +188,7 @@ void setup() {
   mqttClient.onPublish(onMqttPublish);
   mqttClient.setServer(MQTT_HOST, MQTT_PORT);
   // If your broker requires authentication (username and password), set them below
-  //mqttClient.setCredentials("REPlACE_WITH_YOUR_USER", "REPLACE_WITH_YOUR_PASSWORD");
+  mqttClient.setCredentials(HOME_USER_ID, HOME_USER_PASSWORD);
 
   connectToWifi();
 }
