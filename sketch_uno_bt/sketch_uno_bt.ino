@@ -60,5 +60,5 @@ void loop() {
   Serial.print("home/room3/temperature/"); 
   Serial.println(steinhart);
   
-  delay(1000);
+  delay(10000);
 }
