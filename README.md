@@ -5,4 +5,4 @@
 
 3. ESP8266 MQTT (Temperature, Humidity, Light intensity, LED) -> GCP (Ubuntu: mosquitto, Node-RED) 
 
-4. ESP8266 MQTT -> TSL/SSL -> GCP (Compute Engine: Mosquitto)
+4. ESP8266 MQTT -> TLS/SSL -> GCP (Compute Engine: Mosquitto)
