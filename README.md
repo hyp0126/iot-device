@@ -22,3 +22,8 @@
 2. <b>ARDUINO UNO + Temperature sensor + HC-06(Bluetooth)</b> -> rpi (BT to MQTT) -> GCP (Ubuntu: Mosquitto, Node-RED)
 
 3. <b>UNO BT</b> -> rpi (BT to MQTT) -> (TLS/SSL) -> GCP (Compute Engine: Mosquitto) -> GCP (Node-RED / https)
+
+### node-RED
+<p align="center">
+<img src="https://github.com/hyp0126/iot-device/blob/main/node-RED/node-RED.png?raw=true" width="700" />
+</p>
