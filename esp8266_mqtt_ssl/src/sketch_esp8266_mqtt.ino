@@ -41,14 +41,15 @@
 #define MQTT_PORT 1883
 #endif
 
+#define ROOM_NUMBER 1
 // Temperature, Humidity, Light Intensity MQTT Topics
-#define MQTT_PUB_TEMP "home/room1/temperature"
-#define MQTT_PUB_HUM "home/room1/humidity"
-#define MQTT_PUB_LIGHT "home/room1/brightness"
+#define MQTT_PUB_TEMP "home/room%d/temperature"
+#define MQTT_PUB_HUM "home/room%d/humidity"
+#define MQTT_PUB_LIGHT "home/room%d/brightness"
 
 // LED MQTT Topics
-#define MQTT_PUB_LED "home/room1/ledState"
-#define MQTT_SUB_LED "home/room1/led"
+#define MQTT_PUB_LED "home/room%d/ledState"
+#define MQTT_SUB_LED "home/room%d/led"
 
 // Digital pin connected to the DHT sensor
 #define DHTPIN 14  
@@ -76,6 +77,7 @@ DHT dht(DHTPIN, DHTTYPE);
 float temp;
 float hum;
 float bright;
+bool isMqttConnected = false;
 
 AsyncMqttClient mqttClient;
 Ticker mqttReconnectTimer;
@@ -116,16 +118,23 @@ void connectToMqtt() {
 }
 
 void onMqttConnect(bool sessionPresent) {
+  char topic[100];
+
   Serial.println("Connected to MQTT.");
   Serial.print("Session present: ");
   Serial.println(sessionPresent);
 
   // Subscribe LED command
-  uint16_t packetIdSub1 = mqttClient.subscribe(MQTT_SUB_LED, 1);                            
-  Serial.printf("Subscribing on topic %s at QoS 1, packetId %i: ", MQTT_SUB_LED, packetIdSub1);
+  sprintf(topic, MQTT_SUB_LED, ROOM_NUMBER);
+  uint16_t packetIdSub1 = mqttClient.subscribe(topic, 1);                            
+  Serial.printf("Subscribing on topic %s at QoS 1, packetId %i: ", topic, packetIdSub1);
+
+  isMqttConnected = true;
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
+  isMqttConnected = false;
+
   Serial.println("Disconnected from MQTT.");
 
   if (WiFi.isConnected()) {
@@ -217,6 +226,7 @@ void setup() {
 
 void loop() {
   uint16_t packetIdPub;
+  char topic[100];
   unsigned long currentMillis = millis();
   // Every X number of seconds (interval = 10 seconds) 
   // it publishes a new MQTT message
@@ -224,56 +234,63 @@ void loop() {
     // Save the last time a new reading was published
     previousMillis = currentMillis;
 
-    switch (sensorOrder)
+    if (isMqttConnected)
     {
-      case 0:
-        // New DHT sensor readings
-        hum = dht.readHumidity();
-        // Publish an MQTT message on topic humidity
-        packetIdPub = mqttClient.publish(MQTT_PUB_HUM, 1, true, String(hum).c_str());                            
-        Serial.printf("Publishing on topic %s at QoS 1, packetId %i: ", MQTT_PUB_HUM, packetIdPub);
-        Serial.printf("Message: %.2f \n", hum);
-        break;
+      switch (sensorOrder)
+      {
+        case 0:
+          // New DHT sensor readings
+          hum = dht.readHumidity();
+          // Publish an MQTT message on topic humidity
+          sprintf(topic, MQTT_PUB_HUM, ROOM_NUMBER);
+          packetIdPub = mqttClient.publish(topic, 1, true, String(hum).c_str());                            
+          Serial.printf("Publishing on topic %s at QoS 1, packetId %i: ", topic, packetIdPub);
+          Serial.printf("Message: %.2f \n", hum);
+          break;
 
-      case 1:
-        // Read temperature as Celsius (the default)
-        temp = dht.readTemperature();
-        // Read temperature as Fahrenheit (isFahrenheit = true)
-        //temp = dht.readTemperature(true);
-        // Publish an MQTT message on topic temperature
-        packetIdPub = mqttClient.publish(MQTT_PUB_TEMP, 1, true, String(temp).c_str());                            
-        Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", MQTT_PUB_TEMP, packetIdPub);
-        Serial.printf("Message: %.2f \n", temp);
-        break;
+        case 1:
+          // Read temperature as Celsius (the default)
+          temp = dht.readTemperature();
+          // Read temperature as Fahrenheit (isFahrenheit = true)
+          //temp = dht.readTemperature(true);
+          // Publish an MQTT message on topic temperature
+          sprintf(topic, MQTT_PUB_TEMP, ROOM_NUMBER);
+          packetIdPub = mqttClient.publish(topic, 1, true, String(temp).c_str());                            
+          Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", topic, packetIdPub);
+          Serial.printf("Message: %.2f \n", temp);
+          break;
 
-      case 2:
-        // Read CDS sensor
-        bright = analogRead(CDSPIN);
-        // Publish an MQTT message on topic brightness
-        packetIdPub = mqttClient.publish(MQTT_PUB_LIGHT, 1, true, String(bright).c_str());                            
-        Serial.printf("Publishing on topic %s at QoS 1, packetId %i: ", MQTT_PUB_LIGHT, packetIdPub);
-        Serial.printf("Message: %.2f \n", bright);  
-        break;
+        case 2:
+          // Read CDS sensor
+          bright = analogRead(CDSPIN);
+          // Publish an MQTT message on topic brightness
+          sprintf(topic, MQTT_PUB_LIGHT, ROOM_NUMBER);
+          packetIdPub = mqttClient.publish(topic, 1, true, String(bright).c_str());                            
+          Serial.printf("Publishing on topic %s at QoS 1, packetId %i: ", topic, packetIdPub);
+          Serial.printf("Message: %.2f \n", bright);  
+          break;
 
-      case 3:
-        // Publish an MQTT message on topic led
-        char ledOnFlagStr[2];
-        if (ledOnFlag == true)
-        {
-          strcpy(ledOnFlagStr, "1");
-        }
-        else
-        {
-          strcpy(ledOnFlagStr, "0");
-        }
-        packetIdPub = mqttClient.publish(MQTT_PUB_LED, 1, true, ledOnFlagStr);                            
-        Serial.printf("Publishing on topic %s at QoS 1, packetId %i: ", MQTT_PUB_LED, packetIdPub);
-        Serial.printf("Message: %s \n", ledOnFlagStr);
-    }
-    sensorOrder++;
-    if (sensorOrder >= MAX_SENSOR_ORDER)
-    {
-      sensorOrder = 0;
+        case 3:
+          // Publish an MQTT message on topic led
+          char ledOnFlagStr[2];
+          if (ledOnFlag == true)
+          {
+            strcpy(ledOnFlagStr, "1");
+          }
+          else
+          {
+            strcpy(ledOnFlagStr, "0");
+          }
+          sprintf(topic, MQTT_PUB_LED, ROOM_NUMBER);
+          packetIdPub = mqttClient.publish(topic, 1, true, ledOnFlagStr);                            
+          Serial.printf("Publishing on topic %s at QoS 1, packetId %i: ", topic, packetIdPub);
+          Serial.printf("Message: %s \n", ledOnFlagStr);
+      }
+      sensorOrder++;
+      if (sensorOrder >= MAX_SENSOR_ORDER)
+      {
+        sensorOrder = 0;
+      }
     }
   }
 
