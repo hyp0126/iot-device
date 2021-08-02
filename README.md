@@ -15,7 +15,7 @@ The website shows room temperature and humidity, and control LED in a house.
 </p>
 
 ## Technologies
-WiFi, USART<br/>
+WiFi, Bluetooth, USART<br/>
 MQTT + TLS/SSL
 
 ## IoT Gateway
