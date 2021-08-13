@@ -15,11 +15,11 @@ The website shows room temperature and humidity, and control LED in a house.
 </p>
 
 ## Technologies
-WiFi, Bluetooth, USART<br/>
-MQTT + TLS/SSL
+* WiFi, Bluetooth, USART<br/>
+* MQTT + TLS/SSL
 
 ## IoT Gateway
-https://github.com/hyp0126/iot-gateway-rpi
+* IoT Gateway Project: https://github.com/hyp0126/iot-gateway-rpi
 
 ## Test
 ### node-RED
@@ -28,6 +28,6 @@ https://github.com/hyp0126/iot-gateway-rpi
 </p>
 
 ## Web Server
-Backend(AWS EC2): mosquitto, Express (https://github.com/hyp0126/react-home-iot)<br/>
-Frontend(GCP VM): React, NGINX (https://github.com/hyp0126/react-home-iot)<br/>
+* Backend(AWS EC2): mosquitto, Express (https://github.com/hyp0126/react-home-iot)<br/>
+* Frontend(GCP VM): React, NGINX (https://github.com/hyp0126/react-home-iot)<br/>
 
