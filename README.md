@@ -1,7 +1,7 @@
 # Home IoT Project (Iot Devices)
 
 ## Introduction
-The website shows room temperature and humidity, and control LED in a house.
+The IoT devices send room temperature and humidity to Home IoT Server, and receive LED control commands.
 
 ## IoT Devices
 ### NodeMCU(ESP8266)
@@ -25,8 +25,7 @@ The website shows room temperature and humidity, and control LED in a house.
 * Backend(AWS EC2): mosquitto, Express (https://github.com/hyp0126/react-home-iot)<br/>
 * Frontend(GCP VM): React, NGINX (https://github.com/hyp0126/react-home-iot)<br/>
 
-## Test
-### node-RED
+## Test (node-RED)
 <p align="center">
 <img src="https://github.com/hyp0126/iot-device/blob/main/node-RED/node-RED.png?raw=true" width="700" />
 </p>
