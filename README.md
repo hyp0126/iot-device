@@ -21,13 +21,13 @@ The website shows room temperature and humidity, and control LED in a house.
 ## IoT Gateway
 * IoT Gateway Project: https://github.com/hyp0126/iot-gateway-rpi
 
+## Web Server
+* Backend(AWS EC2): mosquitto, Express (https://github.com/hyp0126/react-home-iot)<br/>
+* Frontend(GCP VM): React, NGINX (https://github.com/hyp0126/react-home-iot)<br/>
+
 ## Test
 ### node-RED
 <p align="center">
 <img src="https://github.com/hyp0126/iot-device/blob/main/node-RED/node-RED.png?raw=true" width="700" />
 </p>
-
-## Web Server
-* Backend(AWS EC2): mosquitto, Express (https://github.com/hyp0126/react-home-iot)<br/>
-* Frontend(GCP VM): React, NGINX (https://github.com/hyp0126/react-home-iot)<br/>
 
